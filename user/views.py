@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from user.utill import generate_random_password
+from user.forms import UserForm
+
 
 from faker import Faker
 from user.models import User
@@ -8,10 +10,12 @@ from user.models import Book
 
 # Create your views here.
 
+
 def generate_password(request):
     length = int(request.GET.get('len'))
     result = generate_random_password(length)
     return HttpResponse(str(result))
+
 
 def users(request):
     users = User.objects.all()
@@ -20,13 +24,17 @@ def users(request):
         results += f'ID: {user.id}, Email: {user.email}'
     return HttpResponse(results)
 
-def create_user(request):
-    fake = Faker()
-    user = User.objects.create(email = fake.email(),
-                               first_name = fake.first_name(),
-                               last_name = fake.last_name())
 
-    return HttpResponse(f'ID: {user.id}, Email: {user.email}')
+def create_user(request):
+    form = UserForm(request.GET)
+    is_valid=form.is_valid()
+    print(form.luboy_method())
+    if is_valid:
+        form.save()
+
+    context = {'user_form': form}
+    print(form.luboy_method())
+    return render(request, 'create_user.html', context= context)
 
 
 def all_books(request):
