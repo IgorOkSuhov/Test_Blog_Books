@@ -1,7 +1,7 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from user.utill import generate_random_password
-from user.forms import UserForm
+from user.forms import UserForm, UserBooks
 
 
 from faker import Faker
@@ -26,14 +26,37 @@ def users(request):
 
 
 def create_user(request):
-    form = UserForm(request.GET)
-    is_valid=form.is_valid()
-    print(form.luboy_method())
-    if is_valid:
-        form.save()
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid:
+            form.save()
+            return HttpResponseRedirect('/users/')
+    elif request.method == 'GET':
+        form = UserForm()
 
     context = {'user_form': form}
-    print(form.luboy_method())
+    return render(request, 'create_user.html', context= context)
+
+
+def update_user(request,pk):
+
+    #try:
+        #user = User.objects.get(pk=pk)
+    #except User.DoesNotExist:
+        #raise Http404
+    user = get_object_or_404(User, pk=pk)
+
+
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid:
+            form.save()
+            return HttpResponseRedirect('/users/')
+    elif request.method == 'GET':
+        # instance == type(user) == User
+        form = UserForm(instance=user)
+
+    context = {'user_form': form}
     return render(request, 'create_user.html', context= context)
 
 
@@ -45,6 +68,35 @@ def all_books(request):
     return HttpResponse(results)
 
 
+def create_book(request):
+    if request.method == 'POST':
+        form = UserBooks(request.POST)
+        if form.is_valid:
+            form.save()
+            return HttpResponseRedirect('/books/list/')
+    elif request.method == 'GET':
+        form = UserBooks()
+
+    context = {'user_books': form}
+    return render(request, 'create_book.html', context= context)
+
+def update_books(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+
+
+    if request.method == 'POST':
+        form = UserBooks(request.POST, instance=book)
+        if form.is_valid:
+            form.save()
+            return HttpResponseRedirect('/books/list/')
+    elif request.method == 'GET':
+        form = UserBooks(instance=book)
+
+    context = {'user_books': form}
+    return render(request, 'create_book.html', context= context)
+
+
+
 
 def book_list(request):
     fake = Faker()
@@ -52,4 +104,6 @@ def book_list(request):
                                      author = fake.name())
 
     return HttpResponse(f'ID:{title_book.id}, Author: {title_book.author}, Title: {title_book.title}')
+
+
 

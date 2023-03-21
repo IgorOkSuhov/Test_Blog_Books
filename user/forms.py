@@ -1,5 +1,5 @@
 from django import forms
-from user.models import User
+from user.models import User, Book
 
 
 class UserForm(forms.ModelForm):
@@ -8,6 +8,9 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('email', 'first_name', 'last_name')
 
-    def luboy_method(self):
-        return "luboy_method"
 
+class UserBooks(forms.ModelForm):
+
+    class Meta:
+        model = Book
+        fields = ('author', 'title')

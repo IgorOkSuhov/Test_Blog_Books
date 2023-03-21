@@ -1,5 +1,6 @@
 from faker import Faker
 
+
 from user.models import User
 
 from django.core.management.base import BaseCommand
