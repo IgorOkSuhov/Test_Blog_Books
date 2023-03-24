@@ -1,7 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from user.utill import generate_random_password
 from user.forms import UserForm, UserBooks
+from django.urls import reverse
 
 
 from faker import Faker
@@ -18,11 +19,9 @@ def generate_password(request):
 
 
 def users(request):
-    users = User.objects.all()
-    results = ''
-    for user in users:
-        results += f'ID: {user.id}, Email: {user.email}'
-    return HttpResponse(results)
+    print('IP Address for debug-toolbar: ' + request.META['REMOTE_ADDR'])
+    contex = {'user_list': User.objects.all()}
+    return render(request, 'list_user.html', contex)
 
 
 def create_user(request):
@@ -30,7 +29,8 @@ def create_user(request):
         form = UserForm(request.POST)
         if form.is_valid:
             form.save()
-            return HttpResponseRedirect('/users/')
+            #return HttpResponseRedirect(reverse('users-name'))
+            return redirect('users-name')
     elif request.method == 'GET':
         form = UserForm()
 
@@ -51,21 +51,25 @@ def update_user(request,pk):
         form = UserForm(request.POST, instance=user)
         if form.is_valid:
             form.save()
-            return HttpResponseRedirect('/users/')
+            #return HttpResponseRedirect(reverse('users-name'))
+            return redirect('users-name')
     elif request.method == 'GET':
         # instance == type(user) == User
         form = UserForm(instance=user)
 
-    context = {'user_form': form}
+    context = {'user_form': form, 'user_instance': user,}
     return render(request, 'create_user.html', context= context)
 
 
 def all_books(request):
-    books = Book.objects.all()
-    results = ''
-    for book in books:
-        results += f'ID: {book.id}, Author: {book.author}, Title: {book.title}'
-    return HttpResponse(results)
+    # books = Book.objects.all()
+    #results = ''
+    #for book in books:
+        #results += f'ID: {book.id}, Author: {book.author}, Title: {book.title}'
+    #return HttpResponse(results)
+    print('IP Address for debug-toolbar: ' + request.META['REMOTE_ADDR'])
+    contex = {'book_list': Book.objects.all()}
+    return render(request, 'book_list.html', contex)
 
 
 def create_book(request):
@@ -73,7 +77,8 @@ def create_book(request):
         form = UserBooks(request.POST)
         if form.is_valid:
             form.save()
-            return HttpResponseRedirect('/books/list/')
+            #return HttpResponseRedirect('/books/list/')
+            return redirect('book-list')
     elif request.method == 'GET':
         form = UserBooks()
 
@@ -88,7 +93,8 @@ def update_books(request, pk):
         form = UserBooks(request.POST, instance=book)
         if form.is_valid:
             form.save()
-            return HttpResponseRedirect('/books/list/')
+            #return HttpResponseRedirect('/books/list/')
+            return redirect('book-list')
     elif request.method == 'GET':
         form = UserBooks(instance=book)
 
@@ -105,5 +111,7 @@ def book_list(request):
 
     return HttpResponse(f'ID:{title_book.id}, Author: {title_book.author}, Title: {title_book.title}')
 
+def index(request):
+    return render(request, 'index.html', )
 
 

@@ -17,17 +17,30 @@ from user import views as uv
 
 from django.contrib import admin
 from django.urls import path
+from django.views.generic import TemplateView
 
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    #path('', uv.index),
+    path('', TemplateView.as_view(template_name='index.html'), name='index'),
     path('gp/', uv.generate_password),
-    path('users/', uv.users),
-    path('newusers/', uv.create_user),
+    path('users-list/', uv.users, name='users-name'),
+    path('newusers/', uv.create_user, name='users-create'),
     path('newbook/', uv.create_book),
-    path('books/list/', uv.all_books),
-    path('books/create/', uv.book_list),
-    path('update_user/<int:pk>/', uv.update_user),
-    path('update_books/<int:pk>/', uv.update_books),
+    path('book_list', uv.all_books, name='book-list'),
+    path('books/create/', uv.book_list, name='create_book'),
+    path('update_user/<int:pk>/', uv.update_user, name= 'users-update'),
+    path('update_books/<int:pk>/', uv.update_books, name='book-update'),
 ]
+
+
+from django.conf import settings
+from django.urls import include, path
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [path('__debug__/', include(debug_toolbar.urls)),] + urlpatterns
+
+
