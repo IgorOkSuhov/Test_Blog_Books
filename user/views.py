@@ -8,6 +8,9 @@ from django.urls import reverse
 from faker import Faker
 from user.models import User
 from user.models import Book
+from user.forms import UserBooks
+from user.models import User
+
 
 # Create your views here.
 
@@ -82,7 +85,7 @@ def create_book(request):
     elif request.method == 'GET':
         form = UserBooks()
 
-    context = {'user_books': form}
+    context = {'book_form': form}
     return render(request, 'create_book.html', context= context)
 
 def update_books(request, pk):
@@ -98,18 +101,25 @@ def update_books(request, pk):
     elif request.method == 'GET':
         form = UserBooks(instance=book)
 
-    context = {'user_books': form}
+    context = {'book_form': form}
     return render(request, 'create_book.html', context= context)
 
 
-
-
 def book_list(request):
-    fake = Faker()
-    title_book = Book.objects.create(title = fake.first_name(),
-                                     author = fake.name())
+    #fake = Faker()
+    #title_book = Book.objects.create(title = fake.first_name(),
+                                     #author = fake.name())
+    #return HttpResponse(f'ID:{title_book.id}, Author: {title_book.author}, Title: {title_book.title}')
+    form = UserBooks(request.POST)
+    is_valid = form.is_valid()
+    if is_valid:
+        form.save()
+    else:
+        print(form.errors)
+    context = {'book_form': form}
+    return render(request, 'create_book.html', context= context)
 
-    return HttpResponse(f'ID:{title_book.id}, Author: {title_book.author}, Title: {title_book.title}')
+
 
 def index(request):
     return render(request, 'index.html', )

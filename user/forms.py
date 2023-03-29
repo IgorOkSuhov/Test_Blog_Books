@@ -1,5 +1,6 @@
 from django import forms
-from user.models import User, Book
+from user.models import User
+from user.models import Book
 
 
 class UserForm(forms.ModelForm):

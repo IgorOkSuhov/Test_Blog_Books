@@ -5,10 +5,12 @@
     {{ book_instance.title }}
     {{ book_instance.author }}
 
-
+    {{ formset.errors }}
+    {{ formset.non_field_errors }}
+    {{ form.errors }}
     <form method="post">
         {% csrf_token %}
-        {{ user_books.as_p }}
+        {{ book_form.as_p }}
         <button type="submit">SEND</button>
     </form>
 
