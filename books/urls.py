@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     #path('', uv.index),
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
+    path('slow/', uv.slow, name='slow'),
     path('gp/', uv.generate_password),
     path('users-list/', uv.users, name='users-name'),
     path('newusers/', uv.create_user, name='users-create'),
@@ -33,6 +34,7 @@ urlpatterns = [
     path('books/create/', uv.book_list, name='create_book'),
     path('update_user/<int:pk>/', uv.update_user, name= 'users-update'),
     path('update_books/<int:pk>/', uv.update_books, name='book-update'),
+    path('contact/', uv.contact, name='contact'),
 ]
 
 

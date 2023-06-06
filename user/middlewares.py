@@ -36,3 +36,28 @@ class GoogleLead:
 
         response = self.get_response(request)
         return response
+
+class Logger:
+    def __init__(self, get_response):
+        self.get_response = get_response
+    def __call__(self, request):
+        method = {"GET", "POST"}
+        createds_time = time()
+        if request.method == request.GET.get('GET'):
+            start = time()
+            method["GET"] = request.GET.get('GET')
+            end = time()
+            path = request.path()
+            print('GET', start - end, path)
+        else:
+            start = time()
+            method["POST"] = request.POST.get('POST')
+            end = time()
+            path = request.path
+            print('POST', start - end, path)
+
+
+        response = self.get_response(request)
+        end_createds_time = time()
+        print(createds_time - end_createds_time)
+        return response

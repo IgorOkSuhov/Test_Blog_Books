@@ -1,6 +1,8 @@
 from django import forms
 from user.models import User
 from user.models import Book
+from user.tasks import send_email_async
+from django.core.mail import send_mail
 
 
 class UserForm(forms.ModelForm):
@@ -25,3 +27,13 @@ class UserBooks(forms.ModelForm):
     class Meta:
         model = Book
         fields = ('author', 'title')
+
+
+class ContactUsForm(forms.Form):
+    subject = forms.CharField()
+    text = forms.CharField()
+
+    def save(self):
+        subject = self.cleaned_data['subject']
+        text = self.cleaned_data['text']
+        send_email_async.delay(subject, text)

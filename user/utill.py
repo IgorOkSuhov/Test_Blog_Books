@@ -1,5 +1,6 @@
 import random
 import string
+from time import sleep
 
 from typing import List
 
@@ -20,3 +21,6 @@ def exec_query(query: str) -> List[tuple]:
     result = cursor.fetchall()
     conn.close()
     return result
+
+def smth_slow(wait=10):
+    sleep(wait)

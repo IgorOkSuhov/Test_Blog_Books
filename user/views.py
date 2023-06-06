@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from user.utill import generate_random_password
-from user.forms import UserForm
+from user.utill import generate_random_password, smth_slow
+from user.forms import UserForm, ContactUsForm
+from user.tasks import smth_slow_async
 from django.urls import reverse
 
 
@@ -123,5 +124,29 @@ def book_list(request):
 
 def index(request):
     return render(request, 'index.html', )
+
+
+def slow(request):
+    print('Start')
+    smth_slow_async.delay()
+    print('Finish')
+    return render(request, 'index.html', )
+
+def contact(request):
+
+    if request.method == 'POST':
+        form = ContactUsForm(request.POST)
+        if form.is_valid:
+            form.save()
+            return redirect('users-name')
+    elif request.method == 'GET':
+        form = ContactUsForm()
+
+    context = {'form': form,
+               }
+    return render(request,
+                  'contact_us.html',
+                  context= context,
+                  )
 
 

@@ -1,11 +1,18 @@
-def foo():
-    if not hasattr(foo, 'counter'):
-        foo.counter = 0
-    foo.counter +=1
-    print(foo.counter)
-    return None
+a = []
+pribavlenie_kratnyh = 0
+peremnozenije = 1
 
-print(foo())
-print(foo())
-print(foo())
+for i in range(1,100):
+    if i % 2 == 0:
+        pribavlenie_kratnyh +=i
+        #print(pribavlenie_kratnyh)
+    elif i % 5 == 0:
+        peremnozenije *= i
+        #print(peremnozenije)
+resultat = peremnozenije / pribavlenie_kratnyh
+
+print(pribavlenie_kratnyh)
+print(peremnozenije)
+print(resultat)
+
 
